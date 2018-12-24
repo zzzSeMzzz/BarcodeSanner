@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BarScanner</string>
+    <string name="error_camera_perm">Для работы сканера необходимы разрешения на камеру и запись файлов</string>
 </resources>
