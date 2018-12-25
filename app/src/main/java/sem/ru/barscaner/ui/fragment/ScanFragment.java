@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +57,8 @@ public class ScanFragment extends MvpAppCompatFragment implements
     RecyclerView rvPhoto;
     @BindView(R.id.btnPhoto)
     Button btnPhoto;
+    @BindView(R.id.btnSave)
+    FloatingActionButton btnSave;
 
     @InjectPresenter
     ScanPresenter presenter;
@@ -179,6 +182,20 @@ public class ScanFragment extends MvpAppCompatFragment implements
         onClickPhoto(btnPhoto);
     }
 
+    @Override
+    public void onStartCopyPhoto() {
+        btnSave.setEnabled(false);
+    }
+
+    @Override
+    public void onStartStopPhoto() {
+        if(adapter!=null) adapter.clearItems();
+        btnSave.setEnabled(true);
+        String folder =SettingsActivity.SD_CARD + getActivity().getSharedPreferences("conf", Context.MODE_PRIVATE)
+                .getString("folder", SettingsActivity.DEFAULT_PHOTO_DIR)+"/";
+        showError("Сохранено в "+folder);
+    }
+
     @OnClick(R.id.btnSnan)
     public void onClickScan(View v){
         presenter.setScanClick(true);
@@ -188,10 +205,6 @@ public class ScanFragment extends MvpAppCompatFragment implements
 
     @OnClick(R.id.btnPhoto)
     public void onClickPhoto(View v){
-        /*if(edBarCode.getText().toString().isEmpty()){
-            showError("Заполниет поле штрих код");
-            return;
-        }*/
         int maxPhoto = getActivity().getSharedPreferences("conf", Context.MODE_PRIVATE)
                 .getInt("max", SettingsActivity.DEFAULT_MAX_PHOTO);
         if(adapter!=null&&adapter.getItemCount()>=maxPhoto){
@@ -201,6 +214,18 @@ public class ScanFragment extends MvpAppCompatFragment implements
         presenter.setScanClick(false);
         permissionHelper.requestPermissions(permAll, PERM_ALL,
                 getResources().getString(R.string.error_camera_perm));
+    }
+
+    @OnClick(R.id.btnSave)
+    public void onClickSave(View v){
+        if(edBarCode.getText().toString().isEmpty()){
+            showError("Заполниет поле штрих код");
+            return;
+        }
+        if(adapter==null||adapter.getItemCount()==0) return;
+        String folder =SettingsActivity.SD_CARD + getActivity().getSharedPreferences("conf", Context.MODE_PRIVATE)
+                .getString("folder", SettingsActivity.DEFAULT_PHOTO_DIR)+"/";
+        presenter.saveAllPhoto(adapter.getItems(), folder, edBarCode.getText().toString());
     }
 
     private void showScanner(){

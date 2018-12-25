@@ -24,6 +24,10 @@ public class LocalPhotoAdapter extends RecyclerView.Adapter<LocalPhotoAdapter.Vi
     private List<LocalPhoto> items;
     private static final String TAG = "AdPhotoAdapter";
 
+    public List<LocalPhoto> getItems() {
+        return items;
+    }
+
     public interface OnRvItemClickListener {
         void onPhotoItemClick(LocalPhoto localPhoto);
     }

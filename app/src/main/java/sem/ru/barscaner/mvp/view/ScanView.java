@@ -11,4 +11,8 @@ public interface ScanView extends BaseView {
     void initRecycle(List<LocalPhoto> items);
 
     void addPhoto(LocalPhoto localPhoto);
+
+    void onStartCopyPhoto();
+
+    void onStartStopPhoto();
 }
