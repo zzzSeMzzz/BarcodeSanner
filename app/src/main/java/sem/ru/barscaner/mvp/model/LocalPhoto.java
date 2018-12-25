@@ -4,6 +4,8 @@ import java.io.File;
 
 public class LocalPhoto {
 
+    private long id;
+
     private String fileName;
     private File photo;
     private int scaleWidth, sclaeHeight;
@@ -22,6 +24,14 @@ public class LocalPhoto {
 
     public void setPhoto(File photo) {
         this.photo = photo;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getScaleWidth() {

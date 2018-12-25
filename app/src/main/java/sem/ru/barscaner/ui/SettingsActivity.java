@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -44,9 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSave)
     public void onClickSave(View v){
-        Toast.makeText(this, "В демо версии сохранение недоступно", Toast.LENGTH_SHORT).show();
-        return;
-        /*if(edMaxPhoto.getText().toString().isEmpty()||Integer.valueOf(edMaxPhoto.getText().toString())==0){
+        if(edMaxPhoto.getText().toString().isEmpty()||Integer.valueOf(edMaxPhoto.getText().toString())==0){
             Toast.makeText(this, "Максимум не может быть 0", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -59,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .putString("folder", folder.substring(iS, iE))
                 .putInt("max", Integer.valueOf(edMaxPhoto.getText().toString()))
                 .apply();
-        finish();*/
+        finish();
 
     }
 

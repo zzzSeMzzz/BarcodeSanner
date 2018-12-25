@@ -3,6 +3,7 @@ package sem.ru.barscaner.di;
 import android.app.Application;
 
 import sem.ru.barscaner.di.modules.ContextModule;
+import sem.ru.barscaner.di.modules.DbModule;
 
 
 public class App extends Application {
@@ -19,6 +20,7 @@ public class App extends Application {
 
         sAppComponent = DaggerAppComponent.builder()
                 .contextModule(new ContextModule(this))
+                .dbModule(new DbModule(this))
                 .build();
     }
 

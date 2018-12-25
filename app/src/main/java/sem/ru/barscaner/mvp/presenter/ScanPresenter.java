@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import sem.ru.barscaner.di.App;
@@ -41,7 +40,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        getViewState().initRecycle(new ArrayList<>());
+        getViewState().initRecycle(App.getAppComponent().getSqLiteDB().getAllPhotos());
     }
 
     public String getBarCode() {
@@ -70,6 +69,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
             localPhoto.setScaleWidth(App.THUMBNAIL_WIDTH);
             localPhoto.setSclaeHeight(App.THUMBNAIL_HEIGHT);
         }
+        App.getAppComponent().getSqLiteDB().addPhoto(localPhoto);
         getViewState().addPhoto(localPhoto);
     }
 
@@ -103,7 +103,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         new File(folder).mkdirs();
         for(int i=0; i<photos.size(); i++){
             try {
-                String newFileName = folder+"demo_"+i+".jpg";
+                String newFileName = folder+barCode+"_"+(i+1)+".jpg";
                 copyFile(photos.get(i).getPhoto(), new File(newFileName));
                 photos.get(i).getPhoto().delete();
             } catch (IOException e) {
@@ -111,6 +111,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
                 Log.e(TAG, "saveAllPhoto: error copy file");
             }
         }
+        App.getAppComponent().getSqLiteDB().clearPhotos();
         getViewState().onStartStopPhoto();
     }
 }

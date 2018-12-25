@@ -173,12 +173,7 @@ public class ScanFragment extends MvpAppCompatFragment implements
     @Override
     public void addPhoto(LocalPhoto localPhoto) {
         adapter.addItem(localPhoto);
-        /*if(adapter!=null&&adapter.getItemCount()>=3){
-            showError("В демо версии нельзя делать больше 3х фотографий");
-            return;
-        }else{
-            showCamera();
-        }*/
+
         onClickPhoto(btnPhoto);
     }
 
@@ -240,6 +235,7 @@ public class ScanFragment extends MvpAppCompatFragment implements
             if (resultCode == Activity.RESULT_OK) {
                 if(data.getStringExtra("barcode")!=null){
                     presenter.setBarCode(data.getStringExtra("barcode"));
+                    onClickPhoto(btnPhoto);
                 }
             }
         }
@@ -257,15 +253,6 @@ public class ScanFragment extends MvpAppCompatFragment implements
                 showError("Ошибка обработки файла");
                 return;
             }
-            //Log.d(TAG, "onActivityResult: dest="+dest.getAbsolutePath());
-            //currentPhotoFileName = dest.getAbsolutePath();//!!
-
-            /*Picasso.get()
-                    .load(dest)
-                    .error(R.drawable.ic_image)
-                    .into(imgPhoto);
-
-            if(presenter.getAnimal()!=null) presenter.getAnimal().setPhoto(currentPhotoFileName);*/
         }
     }
 

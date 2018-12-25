@@ -49,6 +49,7 @@ public class LocalPhotoAdapter extends RecyclerView.Adapter<LocalPhotoAdapter.Vi
                 int pos = getAdapterPosition();
                 LocalPhoto localPhoto = items.get(pos);
                 localPhoto.getPhoto().delete();
+                App.getAppComponent().getSqLiteDB().delPhoto(localPhoto.getId());
                 items.remove(pos);
                 notifyItemRemoved(pos);
             });
