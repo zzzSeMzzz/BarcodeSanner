@@ -44,6 +44,8 @@ dependencies {
 
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
 
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation "android.arch.navigation:navigation-fragment:$nav_version"
     implementation "android.arch.navigation:navigation-ui:$nav_version"
 

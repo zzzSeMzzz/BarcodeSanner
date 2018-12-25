@@ -49,7 +49,7 @@ public class ScanActivity extends AppCompatActivity {
         @Override
         public void barcodeResult(BarcodeResult result) {
             Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 VibrationEffect effect =
                         VibrationEffect.createOneShot(700, VibrationEffect.DEFAULT_AMPLITUDE);
                 vibrator.vibrate(effect);
