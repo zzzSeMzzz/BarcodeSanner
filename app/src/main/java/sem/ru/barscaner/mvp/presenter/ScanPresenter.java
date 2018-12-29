@@ -103,7 +103,8 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         new File(folder).mkdirs();
         for(int i=0; i<photos.size(); i++){
             try {
-                String newFileName = folder+barCode+"_"+(i+1)+".jpg";
+                String newFileName;
+                newFileName = i==0 ? folder + barCode + ".jpg" : folder + barCode + "_" + i + ".jpg";
                 copyFile(photos.get(i).getPhoto(), new File(newFileName));
                 photos.get(i).getPhoto().delete();
             } catch (IOException e) {
