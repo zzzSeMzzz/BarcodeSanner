@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +62,14 @@ public class ScanFragment extends MvpAppCompatFragment implements
     Button btnPhoto;
     @BindView(R.id.btnSave)
     FloatingActionButton btnSave;
+    @BindView(R.id.cardView)
+    CardView cardViewCode;
+    @BindView(R.id.cardView2)
+    CardView cardViewPhoto;
+    @BindView(R.id.progressBar)
+    ProgressBar progress;
+    @BindView(R.id.llProgress)
+    LinearLayout llProgress;
 
     @InjectPresenter
     ScanPresenter presenter;
@@ -150,6 +161,14 @@ public class ScanFragment extends MvpAppCompatFragment implements
     }
 
     @Override
+    public void showProgress(boolean show) {
+        llProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+        cardViewCode.setVisibility(!show ? View.VISIBLE : View.GONE);
+        cardViewPhoto.setVisibility(!show ? View.VISIBLE : View.GONE);
+        btnSave.setEnabled(!show);
+    }
+
+    @Override
     public void setBarcode(String barcode) {
         edBarCode.setText(barcode);
     }
@@ -183,12 +202,15 @@ public class ScanFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public void onStartStopPhoto() {
+    public void onStartStopPhoto(boolean showMessage) {
         if(adapter!=null) adapter.clearItems();
         btnSave.setEnabled(true);
+        edBarCode.setText("");
         String folder =SettingsActivity.SD_CARD + getActivity().getSharedPreferences("conf", Context.MODE_PRIVATE)
                 .getString("folder", SettingsActivity.DEFAULT_PHOTO_DIR)+"/";
-        showError("Сохранено в "+folder);
+        if(showMessage) {
+            showError("Сохранено в " + folder);
+        }
     }
 
     @OnClick(R.id.btnSnan)
@@ -221,6 +243,7 @@ public class ScanFragment extends MvpAppCompatFragment implements
         String folder =SettingsActivity.SD_CARD + getActivity().getSharedPreferences("conf", Context.MODE_PRIVATE)
                 .getString("folder", SettingsActivity.DEFAULT_PHOTO_DIR)+"/";
         presenter.saveAllPhoto(adapter.getItems(), folder, edBarCode.getText().toString());
+        //presenter.sendFile("/storage/emulated/0/BarcodeScanner/12121.jpg");
     }
 
     private void showScanner(){

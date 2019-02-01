@@ -1,5 +1,6 @@
 package sem.ru.barscaner.mvp.presenter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -10,14 +11,29 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import sem.ru.barscaner.api.MainService;
 import sem.ru.barscaner.di.App;
 import sem.ru.barscaner.mvp.model.LocalPhoto;
 import sem.ru.barscaner.mvp.view.ScanView;
+import sem.ru.barscaner.utils.ApiUtil;
 
 @InjectViewState
 public class ScanPresenter extends BasePresenter<ScanView> {
+
+    @Inject
+    MainService service;
+    private static final String token = "Bearer a7f2c75dd6074825c305b8dc6f0038c6095882e6";
 
     private static final String TAG = "ScanPresenter";
 
@@ -35,6 +51,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
 
     public ScanPresenter() {
         //items = new ArrayList<>();
+        App.getAppComponent().inject(this);
     }
 
     @Override
@@ -101,10 +118,12 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         Log.d(TAG, "saveAllPhoto: try create folder "+folder);
         getViewState().onStartCopyPhoto();
         new File(folder).mkdirs();
+        List<String> fileNames = new ArrayList<>();
         for(int i=0; i<photos.size(); i++){
             try {
                 String newFileName;
                 newFileName = i==0 ? folder + barCode + ".jpg" : folder + barCode + "_" + i + ".jpg";
+                fileNames.add(newFileName);
                 copyFile(photos.get(i).getPhoto(), new File(newFileName));
                 photos.get(i).getPhoto().delete();
             } catch (IOException e) {
@@ -113,6 +132,73 @@ public class ScanPresenter extends BasePresenter<ScanView> {
             }
         }
         App.getAppComponent().getSqLiteDB().clearPhotos();
-        getViewState().onStartStopPhoto();
+        boolean sendServer = App.getAppComponent().getContext()
+                .getSharedPreferences("conf", Context.MODE_PRIVATE)
+                .getBoolean("sendServer", true);
+        if(sendServer) {
+            sendFiles(fileNames, barCode);
+        }else {
+            getViewState().onStartStopPhoto(true);
+        }
+    }
+
+    /*public void sendFiles222(List<String> fileNames){
+        if(fileNames.size()==0){
+            getViewState().onStartStopPhoto();
+            return;
+        }
+        sendFile(fileNames.get(0));
+    }*/
+
+    private MultipartBody.Part[] createMultiParts(List<String> filenames){
+        MultipartBody.Part[] parts = new MultipartBody.Part[filenames.size()];
+        for (int i = 0; i < filenames.size(); i++) {
+
+            File file = new File(filenames.get(i));
+            RequestBody fileReqBody =
+                    RequestBody.create(MediaType.parse("image/jpeg"), file);
+
+            MultipartBody.Part part =
+                    MultipartBody.Part.createFormData("image[]",
+                            file.getName(), fileReqBody);
+            parts[i]=part;
+        }
+        return parts;
+    }
+
+    public void sendFiles(List<String> fileNames, String barCode){
+        //storage/emulated/0/BarcodeScanner/12121.jpg
+        /*File file = new File(fileName);
+        RequestBody fileReqBody =
+                RequestBody.create(MediaType.parse("image/jpeg"), file);
+
+        MultipartBody.Part part =
+                MultipartBody.Part.createFormData("image[]",
+                        file.getName(), fileReqBody);*/
+
+        getViewState().showProgress(true);
+        RequestBody description =
+                RequestBody.create(MediaType.parse("text/plain"), barCode);
+
+        Disposable d = service.sendFile(token, createMultiParts(fileNames), description)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                            Log.d(TAG, "send file success");
+                            Log.d(TAG, "sendFile: "+response.toString());
+                            if(response.getMessage()!=null){
+                                getViewState().showError(response.getMessage());
+                            }
+                            getViewState().showProgress(false);
+                            getViewState().onStartStopPhoto(false);
+                        },
+                        error -> {
+                            Log.e(TAG, "send file failed");
+                            getViewState().showProgress(false);
+                            getViewState().showError("Ошибка загурзки файла "+
+                                    ApiUtil.getMessage(error));
+                        }
+                );
+        unsubscribeOnDestroy(d);
     }
 }

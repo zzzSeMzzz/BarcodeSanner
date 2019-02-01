@@ -1,6 +1,6 @@
 package sem.ru.barscaner.ui;
 
-import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -29,6 +30,8 @@ public class SettingsActivity extends AppCompatActivity {
     EditText edFolder;
     @BindView(R.id.edMaxPhoto)
     EditText edMaxPhoto;
+    @BindView(R.id.swSendServer)
+    Switch swSendServer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,11 @@ public class SettingsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         edFolder.setKeyListener(null);
         setTitle("Настройки");
-        String folder = getSharedPreferences("conf", MODE_PRIVATE).getString("folder", DEFAULT_PHOTO_DIR);
-        int maxPhoto = getSharedPreferences("conf", MODE_PRIVATE).getInt("max", DEFAULT_MAX_PHOTO);
+        SharedPreferences preferences = getSharedPreferences("conf", MODE_PRIVATE);
+        String folder = preferences.getString("folder", DEFAULT_PHOTO_DIR);
+        int maxPhoto = preferences.getInt("max", DEFAULT_MAX_PHOTO);
+        boolean sendServer = preferences.getBoolean("sendServer", true);
+        swSendServer.setChecked(sendServer);
         edFolder.setText(SD_CARD+folder);
         edMaxPhoto.setText(String.valueOf(maxPhoto));
     }
@@ -57,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .edit()
                 .putString("folder", folder.substring(iS, iE))
                 .putInt("max", Integer.valueOf(edMaxPhoto.getText().toString()))
+                .putBoolean("sendServer", swSendServer.isChecked())
                 .apply();
         finish();
 
@@ -70,16 +77,13 @@ public class SettingsActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
         EditText edMain = dialogView.findViewById(R.id.edMain);
         edMain.setText(getSharedPreferences("conf", MODE_PRIVATE).getString("folder", DEFAULT_PHOTO_DIR));
-        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(!edMain.getText().toString().isEmpty()){
-                    getSharedPreferences("conf", MODE_PRIVATE)
-                            .edit()
-                            .putString("folder", edMain.getText().toString())
-                            .apply();
-                    edFolder.setText(SD_CARD+edMain.getText().toString());
-                }
+        dialogBuilder.setPositiveButton("OK", (dialogInterface, i) -> {
+            if(!edMain.getText().toString().isEmpty()){
+                getSharedPreferences("conf", MODE_PRIVATE)
+                        .edit()
+                        .putString("folder", edMain.getText().toString())
+                        .apply();
+                edFolder.setText(SD_CARD+edMain.getText().toString());
             }
         })
                 .setTitle("Название папки")
