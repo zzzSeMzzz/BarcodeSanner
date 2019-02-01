@@ -134,7 +134,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         App.getAppComponent().getSqLiteDB().clearPhotos();
         boolean sendServer = App.getAppComponent().getContext()
                 .getSharedPreferences("conf", Context.MODE_PRIVATE)
-                .getBoolean("sendServer", true);
+                .getBoolean("sendServer", false);
         if(sendServer) {
             sendFiles(fileNames, barCode);
         }else {

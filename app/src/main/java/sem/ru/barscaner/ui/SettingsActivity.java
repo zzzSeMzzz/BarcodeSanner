@@ -43,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("conf", MODE_PRIVATE);
         String folder = preferences.getString("folder", DEFAULT_PHOTO_DIR);
         int maxPhoto = preferences.getInt("max", DEFAULT_MAX_PHOTO);
-        boolean sendServer = preferences.getBoolean("sendServer", true);
+        boolean sendServer = preferences.getBoolean("sendServer", false);
         swSendServer.setChecked(sendServer);
         edFolder.setText(SD_CARD+folder);
         edMaxPhoto.setText(String.valueOf(maxPhoto));

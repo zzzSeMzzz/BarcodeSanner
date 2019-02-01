@@ -47,6 +47,7 @@ import sem.ru.barscaner.ui.ScanActivity;
 import sem.ru.barscaner.ui.SettingsActivity;
 import sem.ru.barscaner.ui.adapter.LocalPhotoAdapter;
 import sem.ru.barscaner.utils.PermissionHelper;
+import sem.ru.barscaner.utils.SignedDecimalKeyListener;
 
 public class ScanFragment extends MvpAppCompatFragment implements
         PermissionHelper.OnPermissionResultImpl, PermissionHelper.OnShowRationaleAlert,
@@ -106,6 +107,7 @@ public class ScanFragment extends MvpAppCompatFragment implements
         View v = inflater.inflate(R.layout.fragment_scan, null);
         ButterKnife.bind(this, v);
 
+        edBarCode.setKeyListener(SignedDecimalKeyListener.getInstance());
         permissionHelper = new PermissionHelper(this,
                 this, this);
         return v;
