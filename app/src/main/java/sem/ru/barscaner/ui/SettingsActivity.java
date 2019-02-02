@@ -32,6 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
     EditText edMaxPhoto;
     @BindView(R.id.swSendServer)
     Switch swSendServer;
+    @BindView(R.id.edToken)
+    EditText edToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,23 @@ public class SettingsActivity extends AppCompatActivity {
         String folder = preferences.getString("folder", DEFAULT_PHOTO_DIR);
         int maxPhoto = preferences.getInt("max", DEFAULT_MAX_PHOTO);
         boolean sendServer = preferences.getBoolean("sendServer", false);
+        String token = preferences.getString("token",
+                "Bearer a7f2c75dd6074825c305b8dc6f0038c6095882e6");
         swSendServer.setChecked(sendServer);
         edFolder.setText(SD_CARD+folder);
         edMaxPhoto.setText(String.valueOf(maxPhoto));
+        edToken.setText(token);
     }
 
     @OnClick(R.id.btnSave)
     public void onClickSave(View v){
-        if(edMaxPhoto.getText().toString().isEmpty()||Integer.valueOf(edMaxPhoto.getText().toString())==0){
+        if(edMaxPhoto.getText().toString().isEmpty()
+                ||Integer.valueOf(edMaxPhoto.getText().toString())==0){
             Toast.makeText(this, "Максимум не может быть 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(edToken.getText().toString().isEmpty()){
+            Toast.makeText(this, "Токен не может быть пустым", Toast.LENGTH_SHORT).show();
             return;
         }
         String folder = edFolder.getText().toString();
@@ -64,7 +74,10 @@ public class SettingsActivity extends AppCompatActivity {
                 .putString("folder", folder.substring(iS, iE))
                 .putInt("max", Integer.valueOf(edMaxPhoto.getText().toString()))
                 .putBoolean("sendServer", swSendServer.isChecked())
+                .putString("token", edToken.getText().toString())
                 .apply();
+        Toast.makeText(this, "Изменения вступят в силу после перезагрузки",
+                Toast.LENGTH_SHORT).show();
         finish();
 
     }

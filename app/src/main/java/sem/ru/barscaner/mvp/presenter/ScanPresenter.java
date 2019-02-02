@@ -33,13 +33,14 @@ public class ScanPresenter extends BasePresenter<ScanView> {
 
     @Inject
     MainService service;
-    private static final String token = "Bearer a7f2c75dd6074825c305b8dc6f0038c6095882e6";
+    private static String token = "Bearer a7f2c75dd6074825c305b8dc6f0038c6095882e6";
 
     private static final String TAG = "ScanPresenter";
 
     private String barCode;
     //private List<LocalPhoto> items;
     private boolean scanClick;
+    boolean sendServer;
 
     public boolean isScanClick() {
         return scanClick;
@@ -52,6 +53,22 @@ public class ScanPresenter extends BasePresenter<ScanView> {
     public ScanPresenter() {
         //items = new ArrayList<>();
         App.getAppComponent().inject(this);
+        token=App.getAppComponent().getContext()
+                .getSharedPreferences("conf", Context.MODE_PRIVATE)
+                .getString("token", token);
+        sendServer = App.getAppComponent().getContext()
+                .getSharedPreferences("conf", Context.MODE_PRIVATE)
+                .getBoolean("sendServer", false);
+        getViewState().showServerInfo(sendServer);
+    }
+
+    public boolean isSendServer() {
+        return sendServer;
+    }
+
+    public void setSendServer(boolean sendServer) {
+        this.sendServer = sendServer;
+        getViewState().showServerInfo(sendServer);
     }
 
     @Override
@@ -132,9 +149,6 @@ public class ScanPresenter extends BasePresenter<ScanView> {
             }
         }
         App.getAppComponent().getSqLiteDB().clearPhotos();
-        boolean sendServer = App.getAppComponent().getContext()
-                .getSharedPreferences("conf", Context.MODE_PRIVATE)
-                .getBoolean("sendServer", false);
         if(sendServer) {
             sendFiles(fileNames, barCode);
         }else {

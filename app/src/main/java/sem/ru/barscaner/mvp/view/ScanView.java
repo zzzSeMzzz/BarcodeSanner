@@ -21,4 +21,6 @@ public interface ScanView extends BaseView {
     void onStartStopPhoto(boolean showMessage);
 
     void showProgress(boolean show);
+
+    void showServerInfo(boolean show);
 }

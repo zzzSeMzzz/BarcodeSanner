@@ -71,6 +71,8 @@ public class ScanFragment extends MvpAppCompatFragment implements
     ProgressBar progress;
     @BindView(R.id.llProgress)
     LinearLayout llProgress;
+    @BindView(R.id.tvServer)
+    TextView tvServer;
 
     @InjectPresenter
     ScanPresenter presenter;
@@ -168,6 +170,11 @@ public class ScanFragment extends MvpAppCompatFragment implements
         cardViewCode.setVisibility(!show ? View.VISIBLE : View.GONE);
         cardViewPhoto.setVisibility(!show ? View.VISIBLE : View.GONE);
         btnSave.setEnabled(!show);
+    }
+
+    @Override
+    public void showServerInfo(boolean show) {
+        tvServer.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
