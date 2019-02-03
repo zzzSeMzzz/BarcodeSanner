@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import sem.ru.barscaner.R;
 import sem.ru.barscaner.di.modules.RetrofitModule;
@@ -61,6 +63,8 @@ public class SettingsActivity extends AppCompatActivity {
         edMaxPhoto.setText(String.valueOf(maxPhoto));
         edToken.setText(token);
         edUrl.setText(baseUrl+urlPost);
+        edUrl.setEnabled(swSendServer.isChecked());
+        edToken.setEnabled(swSendServer.isChecked());
     }
 
     @OnClick(R.id.btnSave)
@@ -106,8 +110,9 @@ public class SettingsActivity extends AppCompatActivity {
                 .putString("base_url", baseUrl)
                 .putString("url_post", url.getPath().substring(1))
                 .apply();
-        Toast.makeText(this, "Изменения вступят в силу после перезагрузки",
-                Toast.LENGTH_SHORT).show();
+        /*Toast.makeText(this, "Изменения вступят в силу после перезагрузки",
+                Toast.LENGTH_SHORT).show();*/
+        setResult(RESULT_OK);
         finish();
 
     }
@@ -132,5 +137,11 @@ public class SettingsActivity extends AppCompatActivity {
                 .setTitle("Название папки")
                 .create().show();
 
+    }
+
+    @OnCheckedChanged(R.id.swSendServer)
+    void onSendServerChecked(CompoundButton button, boolean checked) {
+        edUrl.setEnabled(checked);
+        edToken.setEnabled(checked);
     }
 }

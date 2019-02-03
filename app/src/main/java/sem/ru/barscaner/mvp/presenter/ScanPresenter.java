@@ -62,7 +62,9 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         getViewState().showServerInfo(sendServer);
     }
 
-    public boolean isSendServer() {
+    public boolean getSendServer() {
+        sendServer = preferences.getBoolean("sendServer", false);
+        getViewState().showServerInfo(sendServer);
         return sendServer;
     }
 
@@ -180,6 +182,13 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         return parts;
     }
 
+    private void deleteFiles(List<String> fileNames){
+        for(String fileName: fileNames){
+            File f = new File(fileName);
+            if(f.exists()) f.delete();
+        }
+    }
+
     public void sendFiles(List<String> fileNames, String barCode){
         //storage/emulated/0/BarcodeScanner/12121.jpg
         /*File file = new File(fileName);
@@ -209,6 +218,9 @@ public class ScanPresenter extends BasePresenter<ScanView> {
                             Log.d(TAG, "sendFile: "+response.toString());
                             if(response.getMessage()!=null){
                                 getViewState().showError(response.getMessage());
+                            }
+                            if(response.getStatus().toLowerCase().equals("ok")){
+                                deleteFiles(fileNames);
                             }
                             getViewState().showProgress(false);
                             getViewState().onStartStopPhoto(false);

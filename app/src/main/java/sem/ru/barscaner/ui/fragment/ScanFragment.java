@@ -259,10 +259,15 @@ public class ScanFragment extends MvpAppCompatFragment implements
         Intent intent = new Intent(getActivity(), ScanActivity.class);
         startActivityForResult(intent, REQUEST_BARCODE);
     }
+    
+    public void changeSettings(){
+        presenter.getSendServer();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult");
         if (requestCode == REQUEST_BARCODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if(data.getStringExtra("barcode")!=null){
