@@ -25,6 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import sem.ru.barscaner.BuildConfig;
 
 @Module
 public class RetrofitModule {
@@ -95,16 +96,8 @@ public class RetrofitModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient() {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.connectTimeout(15, TimeUnit.SECONDS);
-        //if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-            client.addInterceptor(interceptor);
-       // }
-
-        final TrustManager[] trustAllCerts = new TrustManager[] {
+    public TrustManager[] provideTrustManagers(){
+        return new TrustManager[] {
                 new X509TrustManager() {
                     @Override
                     public void checkClientTrusted(X509Certificate[] chain, String authType)
@@ -122,15 +115,32 @@ public class RetrofitModule {
                     }
                 }
         };
+    }
 
+    @Provides
+    @Singleton
+    public SSLSocketFactory provideSSLContext(TrustManager[] trustManagers) {
         SSLContext sslContext = null;
         try {
             sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            sslContext.init(null, trustManagers, new java.security.SecureRandom());
+            return sslContext.getSocketFactory();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+        return null;
+    }
+
+    @Provides
+    @Singleton
+    public OkHttpClient provideOkHttpClient(SSLSocketFactory sslSocketFactory) {
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.connectTimeout(15, TimeUnit.SECONDS);
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            client.addInterceptor(interceptor);
+        }
 
         /*SSLContext context = null;
         try {
@@ -139,7 +149,6 @@ public class RetrofitModule {
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-
 
         client.sslSocketFactory(sslSocketFactory);
         client.hostnameVerifier((hostname, session) -> true);
