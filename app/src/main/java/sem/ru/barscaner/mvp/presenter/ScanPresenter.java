@@ -1,6 +1,7 @@
 package sem.ru.barscaner.mvp.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -14,8 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -24,6 +23,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import sem.ru.barscaner.api.MainService;
 import sem.ru.barscaner.di.App;
+import sem.ru.barscaner.di.modules.RetrofitModule;
 import sem.ru.barscaner.mvp.model.LocalPhoto;
 import sem.ru.barscaner.mvp.view.ScanView;
 import sem.ru.barscaner.utils.ApiUtil;
@@ -31,8 +31,9 @@ import sem.ru.barscaner.utils.ApiUtil;
 @InjectViewState
 public class ScanPresenter extends BasePresenter<ScanView> {
 
-    @Inject
+    //@Inject
     MainService service;
+
     private static String token = "Bearer a7f2c75dd6074825c305b8dc6f0038c6095882e6";
 
     private static final String TAG = "ScanPresenter";
@@ -40,7 +41,8 @@ public class ScanPresenter extends BasePresenter<ScanView> {
     private String barCode;
     //private List<LocalPhoto> items;
     private boolean scanClick;
-    boolean sendServer;
+    private boolean sendServer;
+    private SharedPreferences preferences;
 
     public boolean isScanClick() {
         return scanClick;
@@ -52,13 +54,11 @@ public class ScanPresenter extends BasePresenter<ScanView> {
 
     public ScanPresenter() {
         //items = new ArrayList<>();
-        App.getAppComponent().inject(this);
-        token=App.getAppComponent().getContext()
-                .getSharedPreferences("conf", Context.MODE_PRIVATE)
-                .getString("token", token);
-        sendServer = App.getAppComponent().getContext()
-                .getSharedPreferences("conf", Context.MODE_PRIVATE)
-                .getBoolean("sendServer", false);
+        //App.getAppComponent().inject(this);
+        this.preferences = App.getAppComponent().getContext()
+                .getSharedPreferences("conf", Context.MODE_PRIVATE);
+        token= preferences.getString("token", token);
+        sendServer = preferences.getBoolean("sendServer", false);
         getViewState().showServerInfo(sendServer);
     }
 
@@ -193,8 +193,15 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         getViewState().showProgress(true);
         RequestBody description =
                 RequestBody.create(MediaType.parse("text/plain"), barCode);
+        App.getAppComponent().getBaseUrlHolder()
+                .setBaseUrl(preferences.getString("base_url", RetrofitModule.API_BASE_URL));
 
-        Disposable d = service.sendFile(token, createMultiParts(fileNames), description)
+        this.service = App.getAppComponent().getMainService();
+        String urlPost = preferences.getString("url_post",
+                "restservice/setimages/");
+
+        Disposable d = service.sendFile(token, createMultiParts(fileNames),
+                description, urlPost)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {

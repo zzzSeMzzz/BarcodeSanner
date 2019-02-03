@@ -26,8 +26,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import sem.ru.barscaner.BuildConfig;
+import sem.ru.barscaner.utils.BaseUrlHolder;
 
-@Module
+@Module(includes = {BaseUrlHolderModule.class})
 public class RetrofitModule {
 
     public static final String API_BASE_URL = "https://pezhon.ru/";
@@ -157,12 +158,13 @@ public class RetrofitModule {
 
     @Provides
     @Singleton
-    Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
+    Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient, BaseUrlHolder baseUrlHolder) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(API_BASE_URL)
+                //.baseUrl(API_BASE_URL)
+                .baseUrl(baseUrlHolder.getBaseUrl())
                 .client(okHttpClient)
                 .build();
     }

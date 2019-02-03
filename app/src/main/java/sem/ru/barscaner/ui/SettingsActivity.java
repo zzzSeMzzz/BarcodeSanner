@@ -12,10 +12,14 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import sem.ru.barscaner.R;
+import sem.ru.barscaner.di.modules.RetrofitModule;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -34,6 +38,8 @@ public class SettingsActivity extends AppCompatActivity {
     Switch swSendServer;
     @BindView(R.id.edToken)
     EditText edToken;
+    @BindView(R.id.edUrl)
+    EditText edUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +54,13 @@ public class SettingsActivity extends AppCompatActivity {
         boolean sendServer = preferences.getBoolean("sendServer", false);
         String token = preferences.getString("token",
                 "Bearer a7f2c75dd6074825c305b8dc6f0038c6095882e6");
+        String baseUrl=preferences.getString("base_url", RetrofitModule.API_BASE_URL);
+        String urlPost=preferences.getString("url_post", "restservice/setimages/");
         swSendServer.setChecked(sendServer);
         edFolder.setText(SD_CARD+folder);
         edMaxPhoto.setText(String.valueOf(maxPhoto));
         edToken.setText(token);
+        edUrl.setText(baseUrl+urlPost);
     }
 
     @OnClick(R.id.btnSave)
@@ -61,10 +70,29 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Максимум не может быть 0", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(edToken.getText().toString().isEmpty()){
-            Toast.makeText(this, "Токен не может быть пустым", Toast.LENGTH_SHORT).show();
+        if(edToken.getText().toString().isEmpty()||edUrl.getText().toString().isEmpty()){
+            Toast.makeText(this,
+                    "Токен и API URL не могут быть пустыми", Toast.LENGTH_SHORT).show();
             return;
         }
+        URL url = null;
+        try {
+            url = new URL(edUrl.getText().toString());
+        } catch (MalformedURLException e) {
+            Toast.makeText(this, "Не верный формат url", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        /*Log.d(TAG, "onClickSave: "+url.getProtocol());
+        Log.d(TAG, "onClickSave: "+url.getHost());
+        Log.d(TAG, "onClickSave: "+url.getPort());
+        Log.d(TAG, "onClickSave: "+url.getPath());*/
+        String baseUrl = url.getProtocol()+"://"+url.getHost();
+        if(url.getPort()!=-1){
+            baseUrl=baseUrl+":"+url.getPort()+"/";
+        }else{
+            baseUrl=baseUrl+"/";
+        }
+        Log.d(TAG, "onClickSave: "+baseUrl);
         String folder = edFolder.getText().toString();
         int iS = folder.lastIndexOf("/")+1;
         int iE = folder.length();
@@ -75,6 +103,8 @@ public class SettingsActivity extends AppCompatActivity {
                 .putInt("max", Integer.valueOf(edMaxPhoto.getText().toString()))
                 .putBoolean("sendServer", swSendServer.isChecked())
                 .putString("token", edToken.getText().toString())
+                .putString("base_url", baseUrl)
+                .putString("url_post", url.getPath().substring(1))
                 .apply();
         Toast.makeText(this, "Изменения вступят в силу после перезагрузки",
                 Toast.LENGTH_SHORT).show();

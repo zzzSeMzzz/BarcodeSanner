@@ -10,6 +10,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Url;
 import sem.ru.barscaner.mvp.model.BaseRespone;
 
 /**
@@ -21,11 +22,12 @@ public interface MainService {
 
 
     @Multipart
-    @POST("/restservice/setimages/")
+    @POST()
     Observable<BaseRespone> sendFile(
             @Header("Authorization") String token,
             @Part MultipartBody.Part[] files,
-            @Part("code") RequestBody requestBody
+            @Part("code") RequestBody requestBody,
+            @Url String url
     );
 
 }
