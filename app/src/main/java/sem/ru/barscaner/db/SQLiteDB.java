@@ -18,7 +18,7 @@ import sem.ru.barscaner.mvp.model.LocalPhoto;
 public class SQLiteDB extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TAG = "SQLiteDB";
     private static final String sqlPhotosDb =
             "CREATE TABLE \"photos\" (\n" +
@@ -26,7 +26,8 @@ public class SQLiteDB extends SQLiteOpenHelper {
                     "\"name\"  TEXT,\n" +
                     "\"photo\"  TEXT,\n" +
                     "\"scaleW\"  INTEGER,\n" +
-                    "\"scaleH\"  INTEGER\n" +
+                    "\"scaleH\"  INTEGER,\n" +
+                    "\"barcode\"  TEXT\n" +
                     ");";
 
 
@@ -58,6 +59,9 @@ public class SQLiteDB extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //this.onCreate(db);
         Log.d(TAG, "onUpgrade: new version="+newVersion);
+        if(oldVersion==1 && newVersion==2){
+            db.execSQL("ALTER TABLE photos ADD COLUMN barcode TEXT DEFAULT ''");
+        }
     }
 
 
@@ -69,6 +73,7 @@ public class SQLiteDB extends SQLiteOpenHelper {
         values.put("photo", item.getPhoto().getAbsolutePath());
         values.put("scaleW", item.getScaleWidth());
         values.put("scaleH", item.getSclaeHeight());
+        values.put("barcode", item.getBarcode());
         long id = db.insert("photos", null, values);
         item.setId(id);
         //db.close();
@@ -87,6 +92,7 @@ public class SQLiteDB extends SQLiteOpenHelper {
                 localPhoto.setSclaeHeight(cursor.getInt(4));
                 localPhoto.setScaleWidth(cursor.getInt(3));
                 localPhoto.setId(cursor.getLong(0));
+                localPhoto.setBarcode(cursor.getString(5));
                 animals.add(localPhoto);
             }
         }

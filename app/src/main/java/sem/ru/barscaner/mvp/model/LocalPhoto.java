@@ -6,7 +6,7 @@ public class LocalPhoto {
 
     private long id;
 
-    private String fileName;
+    private String fileName, barcode;
     private File photo;
     private int scaleWidth, sclaeHeight;
 
@@ -48,5 +48,13 @@ public class LocalPhoto {
 
     public void setSclaeHeight(int sclaeHeight) {
         this.sclaeHeight = sclaeHeight;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 }

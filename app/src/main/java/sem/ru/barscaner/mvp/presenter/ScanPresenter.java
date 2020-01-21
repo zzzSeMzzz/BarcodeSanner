@@ -88,9 +88,10 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         getViewState().setBarcode(barCode);
     }
 
-    public void addLocalPhoto(String fileName){
+    public void addLocalPhoto(String fileName, String currentBarCode){
         LocalPhoto localPhoto = new LocalPhoto();
         localPhoto.setPhoto(new File(fileName));
+        localPhoto.setBarcode(currentBarCode);
         localPhoto.setFileName(localPhoto.getPhoto().getName());
         Bitmap b = null;
         try {
@@ -133,16 +134,18 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         }
     }
 
-    public void saveAllPhoto(List<LocalPhoto> photos, String folder, String barCode){
+    public void saveAllPhoto(List<LocalPhoto> photos, String folder){
         Log.d(TAG, "saveAllPhoto: try create folder "+folder);
         getViewState().onStartCopyPhoto();
         new File(folder).mkdirs();
         List<String> fileNames = new ArrayList<>();
+        List<String> barCodes = new ArrayList<>();
         for(int i=0; i<photos.size(); i++){
             try {
                 String newFileName;
-                newFileName = i==0 ? folder + barCode + ".jpg" : folder + barCode + "_" + i + ".jpg";
+                newFileName = i==0 ? folder + photos.get(i).getBarcode() + ".jpg" : folder + photos.get(i).getBarcode() + "_" + i + ".jpg";
                 fileNames.add(newFileName);
+                barCodes.add(photos.get(i).getBarcode());
                 copyFile(photos.get(i).getPhoto(), new File(newFileName));
                 photos.get(i).getPhoto().delete();
             } catch (IOException e) {
@@ -152,7 +155,7 @@ public class ScanPresenter extends BasePresenter<ScanView> {
         }
         App.getAppComponent().getSqLiteDB().clearPhotos();
         if(sendServer) {
-            sendFiles(fileNames, barCode);
+            sendFiles(fileNames, photos.get(0).getBarcode());//!!!!!! БУДЕТ ОДИНАКОВЫЙ БАРКОЖ ДЛЯ ОТПРАВКИ ВСЕГО
         }else {
             getViewState().onStartStopPhoto(true);
         }

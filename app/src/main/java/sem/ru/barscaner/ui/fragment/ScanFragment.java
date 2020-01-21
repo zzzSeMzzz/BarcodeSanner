@@ -243,6 +243,10 @@ public class ScanFragment extends MvpAppCompatFragment implements
             showError("Максимум фотографий "+maxPhoto);
             return;
         }
+        if(edBarCode.getText().toString().isEmpty()){
+            Toast.makeText(requireContext(), "Сначала отсканируйте штрихкод или введите вручную", Toast.LENGTH_SHORT).show();
+            return;
+        }
         presenter.setScanClick(false);
         permissionHelper.requestPermissions(permAll, PERM_ALL,
                 getResources().getString(R.string.error_camera_perm));
@@ -250,14 +254,14 @@ public class ScanFragment extends MvpAppCompatFragment implements
 
     @OnClick(R.id.btnSave)
     public void onClickSave(View v){
-        if(edBarCode.getText().toString().isEmpty()){
+        /*if(edBarCode.getText().toString().isEmpty()){
             showError("Заполниет поле штрих код");
             return;
-        }
+        }*/
         if(adapter==null||adapter.getItemCount()==0) return;
         String folder =SettingsActivity.SD_CARD + getActivity().getSharedPreferences("conf", Context.MODE_PRIVATE)
                 .getString("folder", SettingsActivity.DEFAULT_PHOTO_DIR)+"/";
-        presenter.saveAllPhoto(adapter.getItems(), folder, edBarCode.getText().toString());
+        presenter.saveAllPhoto(adapter.getItems(), folder);
         //presenter.sendFile("/storage/emulated/0/BarcodeScanner/12121.jpg");
     }
 
@@ -290,7 +294,7 @@ public class ScanFragment extends MvpAppCompatFragment implements
                 /*dest = presenter
                         .resizeImage(new File(currentPhotoFileName), App.MAX_WIDTH_IMAGE);*/
                 //dest = new File(currentPhotoFileName);
-                presenter.addLocalPhoto(currentPhotoFileName);
+                presenter.addLocalPhoto(currentPhotoFileName, edBarCode.getText().toString());
             } catch (Exception e) {
                 e.printStackTrace();
                 showError("Ошибка обработки файла");
