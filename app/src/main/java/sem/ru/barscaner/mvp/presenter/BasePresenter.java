@@ -3,7 +3,9 @@ package sem.ru.barscaner.mvp.presenter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.NonNull;
+
+
+import androidx.annotation.NonNull;
 
 import com.arellomobile.mvp.MvpPresenter;
 import com.arellomobile.mvp.MvpView;

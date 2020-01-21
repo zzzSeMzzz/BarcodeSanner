@@ -5,14 +5,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +138,7 @@ public class PermissionHelper {
                                 }
                             });
                     View view = snack.getView();
-                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
                     tv.setTextColor(Color.WHITE);
                     snack.show();
                 }else{

@@ -1,9 +1,12 @@
 package sem.ru.barscaner.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
 import android.view.MenuItem;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
@@ -18,7 +21,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     ImageView imgMain;
 
     private void setupBtnBack(){
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }

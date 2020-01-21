@@ -3,8 +3,7 @@ package sem.ru.barscaner.ui;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.net.MalformedURLException;
 import java.net.URL;

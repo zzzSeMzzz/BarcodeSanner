@@ -7,10 +7,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ResultPoint;

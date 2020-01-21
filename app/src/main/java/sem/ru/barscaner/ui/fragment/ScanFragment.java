@@ -10,13 +10,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +30,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.MvpAppCompatFragment;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import sem.ru.barscaner.R;
+import sem.ru.barscaner.moxyx.MvpAppCompatFragment;
 import sem.ru.barscaner.mvp.model.LocalPhoto;
 import sem.ru.barscaner.mvp.presenter.ScanPresenter;
 import sem.ru.barscaner.mvp.view.ScanView;
@@ -114,6 +118,8 @@ public class ScanFragment extends MvpAppCompatFragment implements
                 this, this);
         return v;
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
