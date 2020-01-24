@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import sem.ru.barscaner.R;
+import sem.ru.barscaner.di.App;
 import sem.ru.barscaner.moxyx.MvpAppCompatFragment;
 import sem.ru.barscaner.mvp.model.LocalPhoto;
 import sem.ru.barscaner.mvp.presenter.ScanPresenter;
@@ -190,9 +192,9 @@ public class ScanFragment extends MvpAppCompatFragment implements
 
     @Override
     public void initRecycle(List<LocalPhoto> items) {
-        LinearLayoutManager horizontalLayoutManager =
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        rvPhoto.setLayoutManager(horizontalLayoutManager);
+        /*LinearLayoutManager horizontalLayoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);*/
+        rvPhoto.setLayoutManager(new GridLayoutManager(requireContext(), App.IMG_ITEM_NUM_COLUMS));
         adapter = new LocalPhotoAdapter(this, items);
         rvPhoto.setAdapter(adapter);
     }

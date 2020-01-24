@@ -2,6 +2,9 @@ package sem.ru.barscaner.ui.adapter;
 
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -84,14 +88,29 @@ public class LocalPhotoAdapter extends RecyclerView.Adapter<LocalPhotoAdapter.Vi
         return items.size();
     }
 
+    private Bitmap getThumbnail(String fileName){
+        return ThumbnailUtils.extractThumbnail(
+                BitmapFactory.decodeFile(new File(fileName).getAbsolutePath()),
+                App.THUMBNAIL_WIDTH,
+                App.THUMBNAIL_HEIGHT);
+    }
+
+    private Bitmap getThumbnail(File file){
+        return ThumbnailUtils.extractThumbnail(
+                BitmapFactory.decodeFile(file.getAbsolutePath()),
+                App.THUMBNAIL_WIDTH,
+                App.THUMBNAIL_HEIGHT);
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         LocalPhoto record = items.get(i);
-        Picasso.get()
+        viewHolder.image.setImageBitmap(getThumbnail(record.getPhoto()));
+        /*Picasso.get()
                 .load(record.getPhoto())
                 .resize(App.THUMBNAIL_WIDTH, App.THUMBNAIL_HEIGHT)
                 .error(R.drawable.ic_image_black_24dp)
-                .into(viewHolder.image);
+                .into(viewHolder.image);*/
     }
 
 

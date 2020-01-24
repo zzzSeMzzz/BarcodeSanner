@@ -10,8 +10,9 @@ public class App extends Application {
 
     private static AppComponent sAppComponent;
     private static final String TAG = "Application";
-    public static final int THUMBNAIL_WIDTH = 200;
-    public static final int THUMBNAIL_HEIGHT = 200;
+    public static final int THUMBNAIL_WIDTH = 132;
+    public static final int THUMBNAIL_HEIGHT = 132;
+    public static final int IMG_ITEM_NUM_COLUMS = 4;
 
 
     @Override

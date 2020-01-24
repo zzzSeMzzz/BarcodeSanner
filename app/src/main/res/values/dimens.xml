@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="img_item_top_margin">4dp</dimen>
+    <dimen name="img_tem_size">96dp</dimen>
+    <dimen name="layout_img_tem_size">100dp</dimen>
+</resources>
