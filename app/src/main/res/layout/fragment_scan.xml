@@ -119,6 +119,7 @@
                 app:icon="@drawable/ic_photo_camera_black_24dp" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:tag="1"
                 android:id="@+id/rvPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

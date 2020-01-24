@@ -194,7 +194,8 @@ public class ScanFragment extends MvpAppCompatFragment implements
     public void initRecycle(List<LocalPhoto> items) {
         /*LinearLayoutManager horizontalLayoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);*/
-        rvPhoto.setLayoutManager(new GridLayoutManager(requireContext(), App.IMG_ITEM_NUM_COLUMS));
+        int col_count = rvPhoto.getTag().toString().equals("1") ? 4 : 6;
+        rvPhoto.setLayoutManager(new GridLayoutManager(requireContext(), col_count));
         adapter = new LocalPhotoAdapter(this, items);
         rvPhoto.setAdapter(adapter);
     }
