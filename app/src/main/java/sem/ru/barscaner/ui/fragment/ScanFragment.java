@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,6 +53,7 @@ import sem.ru.barscaner.ui.ImageViewerActivity;
 import sem.ru.barscaner.ui.ScanActivity;
 import sem.ru.barscaner.ui.SettingsActivity;
 import sem.ru.barscaner.ui.adapter.LocalPhotoAdapter;
+import sem.ru.barscaner.utils.GridSpacingItemDecoration;
 import sem.ru.barscaner.utils.PermissionHelper;
 import sem.ru.barscaner.utils.SignedDecimalKeyListener;
 
@@ -194,11 +196,34 @@ public class ScanFragment extends MvpAppCompatFragment implements
     public void initRecycle(List<LocalPhoto> items) {
         /*LinearLayoutManager horizontalLayoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);*/
-        int col_count = rvPhoto.getTag().toString().equals("1") ? 4 : 6;
+        int col_count = rvPhoto.getTag().toString().equals("1") ? 3 : 5;
         rvPhoto.setLayoutManager(new GridLayoutManager(requireContext(), col_count));
+        rvPhoto.addItemDecoration(new GridSpacingItemDecoration(col_count, 4, false));
+        rvPhoto.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                /*if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    btnSave.show();*/
+                super.onScrollStateChanged(recyclerView, newState);
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                //super.onScrolled(recyclerView, dx, dy);
+                if (dy<0 && !btnSave.isShown())
+                    btnSave.show();
+                else if(dy>0 && btnSave.isShown())
+                    btnSave.hide();
+            }
+        });
         adapter = new LocalPhotoAdapter(this, items);
         rvPhoto.setAdapter(adapter);
     }
+
+
+
+
 
     @Override
     public void onPhotoItemClick(LocalPhoto localPhoto) {
