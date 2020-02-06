@@ -8,5 +8,6 @@
             <corners android:radius="6dp" />
         </shape>
     </item>
-    <item android:state_pressed="true" android:drawable="@drawable/sss" />
+    <item android:drawable="?android:selectableItemBackground"
+        tools:targetApi="lollipop" />
 </layer-list>
