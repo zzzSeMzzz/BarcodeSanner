@@ -222,9 +222,6 @@ public class ScanFragment extends MvpAppCompatFragment implements
     }
 
 
-
-
-
     @Override
     public void onPhotoItemClick(LocalPhoto localPhoto) {
         Intent intent = new Intent(getActivity(), ImageViewerActivity.class);

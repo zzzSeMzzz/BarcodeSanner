@@ -16,8 +16,10 @@ public interface ScanView extends BaseView {
     @StateStrategyType(OneExecutionStateStrategy.class)
     void addPhoto(LocalPhoto localPhoto);
 
+    @StateStrategyType(OneExecutionStateStrategy.class)
     void onStartCopyPhoto();
 
+    @StateStrategyType(OneExecutionStateStrategy.class)
     void onStartStopPhoto(boolean showMessage);
 
     void showProgress(boolean show);
